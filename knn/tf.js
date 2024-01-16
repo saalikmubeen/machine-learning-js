@@ -191,6 +191,12 @@ t1.concat(t2, (axis = 1)).print();
 
 // ** Summing along an axis:
 
+// axis 0 -> y axis
+// axis 1 -> x axis
+
+// along 0 axis means summing along the rows (imagine an arrow running parallel to the y axis and summing along it)
+// along 1 axis means summing along the columns (imagine an arrow running parallel to the x axis and adding each element)
+
 t = tf.tensor([
 	[1, 2, 3],
 	[4, 5, 6],
@@ -198,8 +204,24 @@ t = tf.tensor([
 
 t.sum().print(); // 21 | sum of all elements in the tensor
 
-t.sum((axis = 0)).print(); // [5, 7, 9] | sum along the rows (axis=0) | sum of each column
+t.sum((axis = 0)).print(); // [5, 7, 9] | sum along the rows (axis=0, y axis) | sum of each column
 
-t.sum((axis = 1)).print(); // [6, 15] | sum along the columns (axis=1) | sum of each row
+t.sum((axis = 1)).print(); // [6, 15] | sum along the columns (axis=1, x axis) | sum of each row
 
 // ** Expanding Dimensions:
+
+t = tf.tensor([
+	[1, 2, 3],
+	[3, 4, 6],
+]);
+
+t.shape; // [2, 3]
+t.expandDims(0).shape; // [1, 2, 3]
+t.expandDims(1).shape; // [2, 1, 3]
+t.expandDims(2).shape; // [2, 3, 1]
+
+tf.tensor([1, 2, 3]);
+
+t.shape; // [3]
+t.expandDims(0).shape; // shape = [1, 3]  |  [[1, 2, 3],]
+t.expandDims(1).shape; // shape = [3, 1]  |  [[1], [2], [3]]
