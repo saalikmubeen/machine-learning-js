@@ -9,6 +9,23 @@
 
 // Unsupervised Learning:
 // Unsupervised learning uses unlabeled data to learn about patterns in the data.
+// Unsupervised learning is a type of machine learning algorithm used to draw inferences from datasets
+// consisting of input data without labeled responses. The most common unsupervised learning method is
+// "cluster analysis" (clustering algorithm), which is used for exploratory data analysis to find hidden
+// patterns or grouping in data.
+// Algorithm figures on it's own without supervision how to group the data based on the patterns it finds
+// in the data. "It does not have a labeled output to learn from. We are not giving the algorithm the right answer
+// or examples or right labels in advance to learn from". It is used for clustering, dimensionality
+// reduction, and association rule learning.
+// To summarize a clustering algorithm, which is a type of unsupervised learning algorithm, takes data without
+// labels and tries to automatically group them into clusters.
+// Whereas in supervised learning, the data comes with both inputs x and input labels y, in unsupervised learning,
+// the data comes only with inputs x but not output labels y, and the algorithm has to find some structure or
+// some pattern or something interesting in the data.
+// Some other clustering algorithms:
+// 1. Anomaly detection  (To find unusual data points or patterns in the data like fraud detection)
+// 2. Dimensionality reduction (Compress data while keeping the important information)
+// 3. Association rule learning (To find interesting relations between attributes in the data)
 
 // Reinforcement Learning:
 // Reinforcement learning is an area of machine learning concerned with how software agents ought to take
@@ -157,13 +174,35 @@ function findOptimalK(data) {
 // Normalization(Scaling) is the process of transforming values of several variables of different
 // scale into a similar range.
 
+// For feature scaling, aim for about -1 <= xj <= 1 for each feature xj
+// -3 <= xj <= 3, -0.3 <= xj <= 0.3 are also acceptable ranges
+
 // Common normalization techniques:
+
 // 1. Min-max scaling
 //  In this technique, the values are shifted and rescaled so that they end up ranging from 0 to 1.
 //  This can be treated kind of interpolation between the original values and the values with the
 //  mean value. The formula is:
 //  For each feature (independent variable) in each row of the data set:
 //  normalizedValue = featureValue - minOfFeatureValues / maxOfFeatureValues - minOfFeatureValues
+
+// 2. Mean normalization
+//  In this technique, the values are rescaled so that they are centered around 0 mostly ranging from -1 to 1.
+//  The formula is:
+//  For each feature (independent variable) in each row of the data set:
+//  normalizedValue = featureValue - meanOrAverageOfFeatureValues / maxOfFeatureValues - minOfFeatureValues
+
+// 3. Z score normalization
+//  In this technique, the values are rescaled so that they have a mean of 0 and a standard deviation of 1.
+//  The formula is:
+//  For each feature (independent variable) in each row of the data set:
+//  normalizedValue = featureValue - meanOrAverageOfFeatureValues / standardDeviationOfFeatureValues
+
+// 4. Dividing by the maximum value:
+//  In this technique, the values are rescaled so that they are mostly ranging from 0 to 1.
+//  The formula is:
+//  For each feature (independent variable) in each row of the data set:
+//  normalizedValue = featureValue / maxOfFeatureValues
 
 function minMax(data, featureCount) {
 	// featureCount = number of independent variables in the data set (dropPosition, bounciness, ballSize)
@@ -237,7 +276,7 @@ function knnRegression(data, predictionPoint, k) {
 	return result;
 }
 
-// Standardization:
+// 3. Standardization: (Z score normalization)
 // Standardization is the process of transforming data into a standard scale.
 // Standardization becomes beneficial when dealing with algorithms that are sensitive to the scale of
 // the input features.

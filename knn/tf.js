@@ -28,7 +28,7 @@ let t_3 = tf.tensor([
 // ** Shape of a Tensor:
 // How many elements there are in each dimension of a tensor.
 // Imagine calling ".length" once on each dimension of a tensor from outside to inside.
-// [2, 4, 1] -> lenghth of arrays from outside to inside
+// [2, 4, 1] -> length of arrays from outside to inside
 // e.g
 
 let t = tf.tensor([1, 2, 3, 4]); // shape is [4]
@@ -193,6 +193,10 @@ t1.concat(t2, (axis = 1)).print();
 
 // axis 0 -> y axis
 // axis 1 -> x axis
+
+// "axis 0 refers to rows" and "axis 1 refers to columns", but if you visulize a tensor as a matrix,
+// the rows are running along the y axis and the columns are running along the x axis.
+// That is why axis 0 refers to the y axis and axis 1 refers to the x axis.
 
 // along 0 axis means summing along the rows (imagine an arrow running parallel to the y axis and summing along it)
 // along 1 axis means summing along the columns (imagine an arrow running parallel to the x axis and adding each element)

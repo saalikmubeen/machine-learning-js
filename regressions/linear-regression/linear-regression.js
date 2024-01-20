@@ -3,20 +3,60 @@ const tf = require("@tensorflow/tfjs");
 // Linear Regression is used for predicting a continuous value like the price of a house or the miles per gallon
 // of a car. It is not used for predicting a discrete value like whether a car is a sedan or a truck.
 
+// y = mx + b (this is the equation of a line and the equation of a linear regression model)
+// m and b are the "parameters of the model" or "weights of the model" or "coefficients of the model"
+// and are the variables you can adjust during training in order to improve the model.
+
 // Methods of solving linear regression:
 // 1. Ordinary Least Squares
-// 2. Gereralized Least Squares
+// 2. Generalized Least Squares
 // 3. Maximum Likelihood Estimation
 // 4. Bayesian Regression
 // 5. Gradient Descent
 
-// Mean Squared Error
-// Mean squared Error tells us how close a regression line is to a set of points. In laymans terms,
-// it tells us how accurate or bad the guess was from the actual value. The smaller the number, the
-// better the guess or better the regression line fits the data.
-// MSE = 1/n * ∑(y - y_hat)^2 | Mean Squared Error = 1/n * ∑(Guessi - Actuali)^2
+// Mean Squared Error (Cost Function or Loss Function):
+// The Cost function will tell us how well the model is doing so that we can try to get it to do better.
+// It is a measure of how well the line fits the training data.
+// The cost function takes the prediction ŷ and compares it to the target y by taking ŷ - y.
+// This difference is called the error.
+
+// Mean squared Error (squared error cost function) tells us how close a regression line is to a set
+// of points. In laymans terms, it tells us how accurate or bad the guess was from the actual value.
+// The smaller the number, the better the guess or better the regression line fits the data.
+// J(m, b) = MSE = 1/2n * ∑(y - ŷ)^2 | Mean Squared Error = 1/n * ∑(Guessi - Actuali)^2
+//  ŷ (y_hat) = "predicted value" or estimated of y or the output of our model
+//  y = "target value" or the actual value of y
+
+// Guessi = guessed_m * x + guessed_b
 
 // MSE is unlikely to ever be 0, but the closer it is to 0, the better the model is at predicting.
+
+/*
+You want to fit a straight line to the training data, so you have the model, f(w, b)(x) =  wx + b. 
+Here, the model's parameters are w, and b. Now, depending on the values chosen for these parameters, you get 
+different straight lines. You want to find values for w, and b, so that the straight line fits the training 
+data well. To measure how well a choice of w, and b fits the training data, you have a cost function J. What 
+the cost function J does is, it measures the difference between the model's predictions(ŷ), and the actual 
+true values for y. The linear regression would try to find values for w, and b, that make J(w, b) as small 
+as possible, we want to minimize the cost function J(w, b)
+
+
+What you really want is an efficient algorithm that you can write in code for automatically finding the values 
+of parameters w and b they give you the best fit line. That minimizes the cost function j. 
+There is an algorithm for doing this called "gradient descent". Gradient descent and variations on gradient 
+descent are used to train, not just linear regression, but some of the biggest and most 
+complex models in all of AI.
+
+*/
+
+/*
+
+Model           ->       y = f(w, b)(x) = wx + b
+Parameters      ->       w, b
+Cost Function   ->       J(w, b) = 1/2n * ∑(y(i) - ŷ(i))^2
+Goal            ->       Minimize J(w, b)
+
+*/
 
 // y = mx + b
 // Miles Per Gallon (mpg) = m * (Horsepower) + b
@@ -71,12 +111,12 @@ class LinearRegression {
 	// Univariate Linear Regression
 	gradientDescent2() {
 		// Steps:
-		// 1. Guess values for m and b
+		// 1. Guess initial values for m and b say 0 and 0
 		// 2. Calculate the MSE
 		// 3. Calculate the slope of MSE with respect to m and b
-		// 4. Multiply the slope by the learning rate
+		// 4. Multiply the slope by the learning rate, α
 		// 5. Subtract the result of above step from the current value of m and b
-		// 6. Repeat steps 2-5 until the MSE is close to 0
+		// 6. Repeat steps 2-5 until the MSE is close to 0 and our algorithm has converged
 
 		// y = mx + b
 		// Mean Squared Error = 1/n * ∑(Guessi - Actuali)^2
@@ -85,6 +125,32 @@ class LinearRegression {
 		// Slope of MSE with respect to b and m:
 		// ∂MSE/∂b = 2/n * ∑(guessed_m * x + guessed_b - Actuali)
 		// ∂MSE/∂m = 2/n * ∑(x * (guessed_m * x + guessed_b - Actuali))
+
+		// ∂MSE/∂b = 2/n * ∑(Guessi - Actuali)
+		// ∂MSE/∂m = 2/n * ∑(x * (Guessi - Actuali))
+		//    where Guessi = guessed_m * x + guessed_b
+
+		// updated_w = w - α * ∂MSE/∂w
+		// updated_b = b - α * ∂MSE/∂b
+
+		// If slope is positive, then we are too far to the right and we need to decrease the value of b
+		// i.e subtract the slope from the current value of b
+		// If slope is negative, then we are too far to the left and we need to increase the value of b
+		// i.e add the slope to the current value of b
+		// That's why there is a negative sign in the formula for updated_b
+
+		// If α is too small, gradient descent can be slow to converge.
+		// If α is too large, gradient descent can overshoot the minimum. It may even fail to converge
+		// and will never find the minimum.
+
+		// As we get nearer a minimum, gradient descent will automatically take smaller steps.
+		// And that is because the slope of the MSE with respect to m and b will get smaller as we get
+		// nearer a minimum and that means the update steps will get smaller as well.
+
+		// The gradient descent algorithm can be used to minimize any cost function J, not just the MSE
+		// cost function that we are using here for linear regression.
+
+		// Putting together gradient descent with the MSE cost function gives us the "linear regression algorithm".
 
 		// mpg = m * (Horsepower) + b
 
@@ -116,7 +182,25 @@ class LinearRegression {
 	}
 
 	// Vectorized Solution of Gradient Descent
-	// Multivariate Linear Regression (Works for any number of features or independent variables)
+	// Multiple Linear Regression (Works for any number of features or independent variables)
+	// y = m1x1 + m2x2 + m3x3 + ... + b
+	// xi = represents the featrues of the ith training example, (ith row of the features matrix,
+	// so it's going to be a list of vector that includes all the features for the ith training example)
+	// xj = represents the jth feature (of the ith training example, ith row of the features matrix)
+
+	//  (i)
+	// x    -> value of feature j in the ith training example (x superscript (i) subscript j)
+	//  j
+
+	// f(w, b) = w1x1 + w2x2 + w3x3 + ... + b
+	// w = [w1, w2, w3, ...] -> vector of weights
+	// x = [x1, x2, x3, ...] -> vector of features
+
+	// f(w, b) = w . x + b (dot product of w and x)
+
+	// Vectoization is the process of rewriting an algorithm so that it uses matrix operations instead of
+	// for loops.
+
 	// Using Tensorflow library
 	gradientDescent(featuresTensor, labelsTensor) {
 		// featuresTensor  = [n, 2]
@@ -241,22 +325,23 @@ module.exports = LinearRegression;
 // 2. Stochastic Gradient Descent
 
 // In Gradient Descent, we use the entire dataset to calculate the gradient or slope of the MSE cost function.
+// So at each iteration or step of gradient descent, we are using all the training exapmles or rows
+// all at a time to calculate the gradient or slope of the MSE cost function.
 
 // Batch Gradient Descent:
-// In Batch Gradient Descent, we use a portion of the observations in our feature set to calculate the gradient
-// or slope of the MSE and our current guess for m and b. We then use that gradient obtained from the portion
-// of the observations to update our guess for m and b. And so we refer to this as batch gradient descent
-// because we are taking batches of our observation set and then running gradient descent with that.
+// In Batch Gradient Descent, we use portions or batches of the observations in our feature set to
+// calculate the gradient or slope of the MSE and our current guess for m and b.
+// We then use that gradient obtained from the smaller portions of the observations to update our guess for
+// m and b. And so we refer to this as batch gradient descent because we are taking batches of our observation
+// set and then running gradient descent with that.
 // With Batch Gradient Descent, in theory we're going to get some convergence on our optimal values of M
 // and B slightly faster than with normal gradient descent because we are updating M and B more frequently.
 
 // Stochastic Gradient Descent (SGD):
-// In Stochastic Gradient Descent, we take a single observation from our feature set and we use that single
-// observation at a time to calculate the gradient or slope of the MSE. We then use that gradient obtained
-// from that single observation to update our guess for m and b.
 // Stochastic gradient descent is the same as batch gradient descent, just with a batch size of one.
 // So if we batch everything out to one observation, we end up getting the same thing as stochastic gradient
-// descent as well.
+// descent as well. We call the algorithm stochastic gradient descent because the gradient or slope of the
+// MSE cost function used to update coefficients or weights are noisy or not exact or stochastic.
 
 // Why we do this?
 
@@ -270,6 +355,15 @@ module.exports = LinearRegression;
 // 15 iterations.
 // And so it can significantly speed up the time that it takes to train our model and get some idea of
 // how we can relate all of our different vehicle attributes to the miles per gallon.
-// With batch and stochastic gradient descent, we're still going to iterate over the entire data set.
-// So we're still looking at all the records. The only difference here is how often we are updating the
-// values of M and B
+// ** With batch and stochastic gradient descent, we're still going to iterate over the entire data set.
+// ** So we're still looking at all the records. The only difference here is how often we are updating the
+// ** values of M and B. For example if we are iterating over the entire data set 100 times, with batch
+// ** size of 10, we will update the values of M and B 10 times for each iteration. So we will update the
+// ** values of M and B 1000 times in total.
+
+/*
+I want to make a quick aside or a quick side note on an alternative way for finding w and b for linear regression. 
+This method is called the "normal equation". Whereas it turns out gradient descent is a great method for 
+minimizing the cost function J to find w and b, there is one other algorithm that works only for linear regression 
+and pretty much none of the other algorithms for solving for w and b and this other method does not need an iterative gradient descent algorithm. Called the "normal equation method", it turns out to be possible to use an advanced linear algebra library to just solve for w and b all in one goal without iterations. Some disadvantages of the normal equation method are; first unlike gradient descent, this is not generalized to other learning algorithms, such as the logistic regression algorithm. The normal equation method is also quite slow if the number of features and this large.
+*/
