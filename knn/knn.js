@@ -173,6 +173,10 @@ function findOptimalK(data) {
 // This will result in a bad prediction model. That is why we need to normalize the data.
 // Normalization(Scaling) is the process of transforming values of several variables of different
 // scale into a similar range.
+// Feature scaling is essential in machine learning, particularly for models relying on distance metrics
+// like nearest neighbors. Some algorithms, like gradient descent, require feature scaling for optimal convergence.
+// Algorithms like regression trees or random forests aren't affected by scaling. Scaling is crucial for
+// k-nearest neighbors.
 
 // For feature scaling, aim for about -1 <= xj <= 1 for each feature xj
 // -3 <= xj <= 3, -0.3 <= xj <= 0.3 are also acceptable ranges
@@ -192,8 +196,9 @@ function findOptimalK(data) {
 //  For each feature (independent variable) in each row of the data set:
 //  normalizedValue = featureValue - meanOrAverageOfFeatureValues / maxOfFeatureValues - minOfFeatureValues
 
-// 3. Z score normalization
+// 3. Z score normalization (Standardization)
 //  In this technique, the values are rescaled so that they have a mean of 0 and a standard deviation of 1.
+//  This is also called standardization. The values are rescaled so that they are mostly ranging from -3 to 3.
 //  The formula is:
 //  For each feature (independent variable) in each row of the data set:
 //  normalizedValue = featureValue - meanOrAverageOfFeatureValues / standardDeviationOfFeatureValues
@@ -279,7 +284,7 @@ function knnRegression(data, predictionPoint, k) {
 // 3. Standardization: (Z score normalization)
 // Standardization is the process of transforming data into a standard scale.
 // Standardization becomes beneficial when dealing with algorithms that are sensitive to the scale of
-// the input features.
+// the input features. After standardization, all the values will be between -3 and 3.
 // Standardization is useful when your data has varying scales and the algorithm you are using does not make
 // assumptions about the distribution of your data, such as k-nearest neighbors and artificial neural networks.
 // Standardization assumes that your data has a Gaussian (bell curve) distribution. This does not strictly have to

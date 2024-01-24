@@ -19,7 +19,7 @@ const linearRegression = new LinearRegression(features, labels, {
 });
 
 linearRegression.train();
-// linearRegression.test(testFeatures, testLabels)
+linearRegression.test(testFeatures, testLabels);
 
 linearRegression
 	.predict([

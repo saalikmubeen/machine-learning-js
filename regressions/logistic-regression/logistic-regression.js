@@ -5,6 +5,15 @@ Linear Regression is used to predict the continuous values like price, salary, a
 Logistic Regression is used to predict the discrete values like 0 or 1, true or false, etc
 In other words, Linear Regression is used to solve Regression problems whereas
 Logistic Regression is used to solve Classification problems.
+Any continuous target can be converted into categories through discretization. for example,
+we can convert the continuous target "age" into categories like "young", "middle aged" and "old".
+young = 10yrs - 30yrs (0) | middle aged = 31yrs - 60yrs (1) | old = 61yrs - 100yrs (2)
+Classification algorithms also often produce a probability prediction of class membership (belonging to a
+particular class).
+
+Logisitc Regression works by transforming a Linear Regression into a classification model through the 
+use of the logistic function. Note that there is a family of logistic functions many of them basedon the
+hyperbolic tangent function. The most common logistic function is the sigmoid function.
 
 Binary Classification:  (Natural Binary Classification)
 Binary Classification is essentially when we try to take an observation and then put it
@@ -328,6 +337,7 @@ with MSE back on linear regression.
 
 /*
 
+
 1. Underfitting
 say y = mx + b is underfitting the data, i.e it is not fitting the data very well.
 
@@ -336,7 +346,14 @@ is underfitting the training data. Another term is the algorithm has "high bias"
 Another way to think of this form of bias is as if the learning algorithm has a very strong preconception, 
 or we say a very strong bias, say that the housing prices are going to be a completely linear function 
 of the size despite data to the contrary. This preconception that the data is (say) linear causes it to 
-fit a straight line that fits the data poorly, leading it to underfitted data
+fit a straight line that fits the data poorly, leading it to underfitted data.
+
+When you have too much bias in under fitting, the model does not capture the underlying trend of the
+data well enough and does not fit to the training data. So we have "low variance, but high bias" and under 
+fitting is often a result of an excessively simple model.
+So when you under a model has too much bias and is generalizing too much under fitting can lead to poor
+performance on both the training set and the testing data set.
+That's why it's a little easier to catch under fitting rather than trying to catch overfitting.
 
 
 2. Overfitting
@@ -352,6 +369,19 @@ say one house was priced just a little bit more or little bit less, then the fun
 fits could end up being totally different. If two different machine learning engineers were to fit the model, 
 to just slightly different datasets, they could end up with totally different predictions or highly variable predictions. That's why we say the algorithm has high variance.
 
+Increasing model complexity and search for better performance leads to what is known as "the bias variance tradeoff".
+We want to have a model that can generalize well to new unseen data, but can also account for variance
+and patterns in the known training data.
+A model that has a high bias that is under fitting, and a model that over fits that is having a high variance.
+
+Overfitting is when the model fits too much to the noise or variance from the data.
+Model is fitting too much to noise and variance in the training data. Model will perform well on the
+training data, but will perform poorly on the test data or unseen data. This often results in low error on 
+training sets, but high error on test or validation sets.
+This is why overfitting can sometimes be a little hard to catch because you may think your model is
+performing really well when in fact it's only performing well on the training set instead of performing
+well to unseen data. So it's overfitting, meaning it has too much variance.
+
 
 3. Good Fit (Generalization)
 Say y = m1x + m2x^2 + b fits the data better, i.e it is fitting the data very well.	
@@ -363,6 +393,34 @@ generalize well, which means to make good predictions even on brand new examples
 You can say that the goal machine learning is to find a model that hopefully is neither 
 underfitting nor overfitting. In other words, hopefully, a model that has neither high bias 
 nor high variance.
+
+To catch overfitting and underfitting issues, we have to analyze the performance of the model not only
+on the training set but also on the test set. We do so by plotting the training error and the test error
+as a function of the model complexity. So we plot the training error and the test error on the y-axis
+and the model complexity on the x-axis. We can then look at the plot and see if the model is overfitting
+or underfitting the data. If the model is overfitting the data, then the training error will be low
+i.e training error curve will go down as the model complexity increases, but the test error will be high
+i.e test error curve will go up as the model complexity increases. If the model is underfitting the data,
+then both the training error and the test error will be high i.e both the training error curve and the
+test error curve will go up as the model complexity increases. If the model is fitting the data well,
+then the training error will be low and the test error will also be low i.e both the training error curve
+and the test error curve will go down as the model complexity increases.
+
+So what then I have to do is actually plot out my error versus my model complexity.
+And keep in mind, model complexity is a general term that is going to apply to more than just polynomial
+regression. In the case of polynomial regression, when we say a model is more complex, 
+that means it's a higher order polynomial. Let's imagine what we think about when we think about a good 
+performing model. A really good model would, as you increase model complexity, have a lower error.
+This is the ideal situation. It's going to be unlikely to be this perfect in the real world, but it's the ideal.
+As you increase the complexity, your error goes lower. And for the polynomial regression case, 
+that would be your polynomial degree. As you increase the degree of your polynomial, your error is going 
+to go down in general.
+What about a bad model?
+A bad model would actually have an increase in error as you increase the complexity of the model.
+In case of polynomial regression, complexity directly relates to the degree of the polynomial, but
+many machine learning algorithms have their own hyperparameters that can increase or decrease the
+complexity of the model.
+
 
 To recap, if you have too many features like the fourth-order polynomial on the right, then the 
 model may fit the training set well, but almost too well or overfit and have high variance. 
@@ -408,5 +466,112 @@ small training set.
 By the way, by convention, we normally just reduce the size of the wj parameters, that is w1 through wn.
 It doesn't make a huge difference whether you regularize the parameter b as well, you could do so if you want 
 or not if you don't.
+
+*/
+
+/*
+Regularization seeks to solve a few common model issues by
+1. Minimizing the model complexity
+2. Penalizing the loss function  (penalizing large coefficients))
+3. Reducing model overfitting (add more bias to reduce model variance)
+
+In general, we can think of regularization as a way to reduce model overfitting and variance 
+by requiring some additional bias and requiring a search for an optimal penalty hyperparameter.
+And really, when it comes down to it, as far as the mathematics is concerned, regularization is all
+about adding in these penalty hyperparameters.
+
+There are three main types of regularization:
+1. L1 regularization (Lasso)
+2. L2 regularization (Ridge)
+3. Elastic net regularization (combination of L1 and L2)
+
+These regularization methods do have a cost. It adds an "additional hyperparameter" that needs to be tuned.
+We can just think about this "additional parameter" as a multiplier to the penalty to decide the strength
+of the penalty term.
+
+*/
+
+/*
+
+* L2 Regularization (Ridge Regression):
+
+L2 regularization is also known as "Ridge Regression". L2 regularization is a regularization method that
+penalizes the sum of squared values of the coefficients of the model. The goal of ridge regression is to
+help prevent overfitting by adding an additional penalty term to the loss function. The penalty term is
+the sum of the squared values of the coefficients multiplied by a constant alpha. This term is 
+called "shrinkage penalty". The constant alpha is a hyperparameter that controls the strength of the penalty term. 
+The higher the value of alpha, the greater the penalty and the coefficients will be pushed more towards zero. 
+The lower the value of alpha, the less the penalty and the coefficients will be less pushed towards zero. 
+If alpha is equal to zero, then the penalty term will be zero and it will be the same as the linear regression
+without regularization. 
+The value of alpha is usually chosen by using cross validation. The value of alpha is usually chosen from a 
+range of values of alpha and the value of alpha that gives the lowest error is chosen as the optimal value of alpha.
+
+
+y = m1x1 + m2x2 + b
+MSE before regularization = 1/n * ∑(Guessi - Actuali)^2 = 1/n * ∑(yi - (m1x1 + m2x2 + b))^2
+MSE after regularization = MSE before regularization + λ * ∑(m1^2 + m2^2)
+ridge regression error term, J = 1/n * ∑(y - m1.x1 m2.x2 + b)^2 + λ * ∑(m1^2 + m2^2)
+
+
+
+The idea behind ridge regression is can we introduce a little bias into the model to significantly reduce
+the variance of the model and not overfit the data. Adding bias can help generlize the model better.
+
+So we are trying to minimize the ridge regression error term.  By minimizing the ridge regression error term,
+we are also trying to minimize the sum of the squared values of the coefficients of the model. By doing
+so we are trying to reduce the variance of the model and overfitting of the model.
+
+So to summarize in this modified cost function J, we want to minimize the original cost, which is the mean 
+squared error cost plus additionally, the second term which is called the regularization term. 
+And so this new cost function trades off two goals that you might have. Trying to minimize this first term 
+(original term of cost function) encourages the algorithm to fit the training data well by minimizing the 
+squared differences of the predictions and the actual values. And try to minimize the second term. 
+The algorithm also tries to keep the parameters wj small, which will tend to reduce overfitting. 
+The value of lambda that you choose, specifies the relative importance or the relative trade off or how you 
+balance between these two goals
+
+Let's take a look at what different values of lambda will cause you're learning algorithm to do. 
+So f(x) = w1x + w2x^2 + w3x^3 + w4x^4 + b is the linear regression model. (overly complex model) 
+If lambda was set to be 0, then you're not using the regularization  term at all because the regularization term is multiplied by 0. And so if lambda was 0, you end up fitting this overly wiggly, overly complex curve and it over fits. So that was one extreme of if lambda was 0. Let's now look at the other extreme. If you said lambda to be a really, really, really large number, say lambda equals 10^10, then you're placing a very heavy weight on this regularization 
+term on the right. And the only way to minimize this is to be sure that all the values of w are pretty much very close to 0. So if lambda is very, very large, the learning algorithm will choose W1, W2, W3 and W4 to be extremely close to 0 and thus f(x) basically equal to b and so the learning algorithm fits a horizontal straight line and under fits. To recap if lambda is 0 this model will over fit If lambda is enormous like 10^10. This model will under fit. And so what you want is
+some value of lambda that is in between that more appropriately balances these first and second terms of trading off, minimizing the mean squared error and keeping the parameters small. And when the value of lambda is not too small and not too large, but just right, then hopefully you end up able to fit a 4th order polynomial, keeping all of these features.
+*/
+
+/*
+* L1 Regularization (Lasso Regression):
+LASSO = Least Absolute Shrinkage and Selection Operator
+
+L1 regularization is also known as "Lasso Regression". L1 regularization is a regularization method that
+penalizes the sum of absolute values of the coefficients of the model. It adds a penalty equal to the 
+"absolute value" of the magnitude of coefficients. This limits the size of the coefficients.
+
+"This type of regularization can result in sparse models with few coefficients where few coefficients 
+can become zero." Lasso can force some of the coefficient estimates to be exactly equal to zero when
+the tuning parameter λ  is sufficiently large. This means that some of the features are entirely ignored
+by the model. So Lasso Regression can be used for feature selection. So similar to subset selection,
+the Lasso performs variable selection by setting some of the coefficient estimates to zero.
+Models generated by Lasso Regression are generally easier to interpret.
+
+lasso regression error term, J = 1/n * ∑(y - m1.x1 m2.x2 + b)^2 + λ * ∑(|m1| + |m2|)
+
+*/
+
+/* 
+* Elastic Net Regularization (Combination of L1 and L2 Regularization):
+
+error term will now be, 
+J = 1/n * ∑(y - m1.x1 m2.x2 + b)^2 + λ1 * ∑(|m1| + |m2|) + λ2 * ∑(m1^2 + m2^2)
+
+Notice there are two distinct hyperparameters λ1 and λ2. λ1 controls the strength of the L1 penalty term and
+λ2 controls the strength of the L2 penalty term. So Elastic Net Regularization is a combination of
+L1 and L2 Regularization.
+
+We can alternatively express this as a ratio of L1 and L2 regularization with λ on the outside 
+and α on the inside. Where α value is the just ratio between actual lasso and ridge regression.
+
+J = 1/n * ∑(y - m1.x1 m2.x2 + b)^2 + λ * (α * ∑(|m1| + |m2|) + (1 - α) * ∑(m1^2 + m2^2))
+
+So, if α = 0, then we have only L2 regularization and if α = 1, then we have only L1 regularization.
 
 */
