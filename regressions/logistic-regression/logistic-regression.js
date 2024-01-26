@@ -335,6 +335,68 @@ When we use the cross entropy equation, we instead get a fully convex function, 
 with MSE back on linear regression.
 */
 
+/*
+* Entropy and Cross Entropy:
+
+Entropy is a measure of the uncertainty of a random variable. It's a quantity that describes the 
+amount of surprise or uncertainty that we have about a specific variable. It is a measure of the amount of information contained in each message. The higher the entropy, the more information is contained in each message.
+Entropy is maximum when all the messages are equally likely. Entropy is minimum when one message is certain to occur. In other words or in terms of probability, entropy is maximum when probability
+is 0.5 and entropy is minimum when probability is 0 or 1.
+So entropy is maximal at probabilities of 0.5. So this is when things when events are maximally 
+uncertain or unpredictable.
+And as the events get more predictable, the probability goes down to zero so this event never 
+happens or the probability goes up to one that this event always happens, then that decreases 
+the amount of entropy. So this is called "information theoretic entropy", or it's also called 
+"Shannon Entropy". 
+
+Formula for Entropy:
+H(X) = - ∑(P(xi) * log(P(xi)))  | log is base 2
+      where x = data values and P(xi) = probability of those data values occuring
+
+If the log base is 2, then the unit of entropy is "bits". If the log base is e, then the unit of
+entropy is "nats". If the log base is 10, then the unit of entropy is "bans".
+
+For coin flip, n = 2  and therefore:
+H = - (1/2 * log(1/2) + 1/2 * log(1/2)) = 1 bit
+
+If p is the probability of heads then 1 - p is the probability of tails, therefore:
+H = - (p * log(p) + (1 - p) * log(1 - p))
+
+High entropy means that the dataset has a lot of variability and low entropy means that most of 
+the values of the dataset repeat (and are therefore redundant, so there's less surprise, 
+there's more predictability of the system.)
+
+But just to mention this briefly, because these are two different measures of variability.
+Entropy is nonlinear. It makes no assumptions about the distributions, whereas variance is more appropriate for a distribution that is roughly normally distributed.
+
+Entropy describes one probability distribution.
+
+Cross Entropy describes the entropy between two different probability distributions p and q.
+Now in deep learning, the way that we use cross entropy is to characterize the performance 
+of the model in terms of how well it's able to predict the correct label given the input data.
+So probability P is going to be the probability that this picture is a cat and Q will be 
+the probability that the model outputs.
+So the model is going to say, I think that this is a picture of a cat with a probability of 0.5.
+So P is going to be the label that we have in the data set and Q is going to be the probability
+that the model outputs. P = actual label and Q = predicted or guessed label.
+
+Cross Entropy Equation:
+H = - ∑(P(xi) * log(Q(xi)))
+
+For example:
+if 
+  p = [1, 0]        -> labels from the dataset saying if image is a cat or not a cat
+and 
+  q = [0.25, 0.75]  -> model's guess if image is a cat or not a cat
+
+
+Binary Cross Entropy:
+Cross Entropy = - (1 * log(0.25) + 0 * log(0.75)) = 1.386 bits
+
+
+
+*/
+
 // ** Overfitting and Underfitting **
 
 /*

@@ -94,8 +94,18 @@ Sigmoid function calculates the "Marginal Probability Distribution".
 
 Softmax function calculates the "Conditional Probability Distribution".
 
+
+Softmax function: σ(z)=  e^z / ∑(e^z)
 Softmax function = (e^ mx + b) / ∑(e^ mx + b)
 Softmax gives the "probability of being the one label rather than 0 label".
+
+For example if z = {1, 2, 3, 4, 5} 
+then σ(z) = {0.01165623, 0.03168492, 0.08612854, 0.23412166, 0.63640865}
+
+each value in σ(z) can be interpretted as the probability of being that value 
+in z rather than any other value in z. for example, 0.63640865 is the probability of being 
+5 and not 1,2,3,4. 
+The sum of all values in σ(z) must be 1.
 
 In case of multinomail logistic regression we want to use Softmax as basis function and not 
 sigmoid.
