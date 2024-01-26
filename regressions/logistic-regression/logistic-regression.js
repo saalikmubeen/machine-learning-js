@@ -10,6 +10,8 @@ we can convert the continuous target "age" into categories like "young", "middle
 young = 10yrs - 30yrs (0) | middle aged = 31yrs - 60yrs (1) | old = 61yrs - 100yrs (2)
 Classification algorithms also often produce a probability prediction of class membership (belonging to a
 particular class).
+Logistic Regression is a a specific type of Generalized Linear Regression (GLM) where the target variable
+is categorical and the error distribution is binomial.
 
 Logisitc Regression works by transforming a Linear Regression into a classification model through the 
 use of the logistic function. Note that there is a family of logistic functions many of them basedon the
@@ -573,5 +575,233 @@ and α on the inside. Where α value is the just ratio between actual lasso and 
 J = 1/n * ∑(y - m1.x1 m2.x2 + b)^2 + λ * (α * ∑(|m1| + |m2|) + (1 - α) * ∑(m1^2 + m2^2))
 
 So, if α = 0, then we have only L2 regularization and if α = 1, then we have only L1 regularization.
+
+*/
+
+/*
+
+* Confusion Matrix:
+
+A confusion matrix is a table that is often used to describe the performance of a classification model
+(or "classifier") on a set of test data for which the true values are known. It allows the visualization
+of the performance of an algorithm. It is a special matrix used to evaluate the performance of a
+classification model. It is a table with 4 different combinations of predicted and actual values.
+It is extremely useful for measuring Recall, Precision, Specificity, Accuracy and most importantly AUC-ROC Curve. Rows of the matrix represent or correspond to what the model predicted and columns of the matrix
+represent or correspond to what the actual values are. The diagonal elements of the matrix represent
+the number of data points for which the predicted label is equal to the true label, i.e the number of
+correct predictions. The off-diagonal elements of the matrix represent the number of data points for
+which the predicted label is not equal to the true label, i.e the number of incorrect predictions of the
+model.
+
+True Positives: The number of correct predictions that an instance is positive and the actual 
+value being positive.
+False Positives: The number of incorrect predictions of the model that an instance is positive and 
+the actual value being negative.
+False Negatives: The number of incorrect predictions of the model that an instance is negative and
+the actual value being positive.
+True Negatives: The number of correct predictions that an instance is negative and the actual
+value being negative.
+
+example:
+Has Heart Disease = 1
+Does not Have Heart Disease = 0
+
+Predicted                               ---------------------   Actual   -----------------------
+                                        Has Heart Disease (A)           Does not Have Heart Disease (A)
+
+Has Heart Disease (P)   ->                 True Positives                 False Positives         		
+Does Not Have Heart Disease (P) ->         False Negatives                True Negatives  
+
+
+
+
+Predicted                                                 Actual
+                                        Has Heart Disease          Does not Have Heart Disease
+
+Has Heart Disease                        139 (True Positives)           20 (False Positives         		
+Does Not Have Heart Disease              32  (False Negatives)          112 (True Negatives) 
+
+
+
+Sensitivity (Recall) tells us what percentage of patients with heart disease were correctly diagnosed
+as having heart disease
+i.e what percentage of being positive were correctly identified as positive.
+Sensitivity(Recall) = True Positives / Total Actual Positives
+Total Actual Positives = True Positives + False Negatives
+Sensitivity = True Positives / (True Positives + False Negatives)
+
+Specificity tells us what percentage of patients without heart disease were correctly diagnosed
+as not having heart disease
+i.e what percentage of being negative were correctly identified as negative.
+Specificity = True Negatives / (True Negatives + False Positives)
+
+Sensitivity tells us a mode'sl ability to identify positive outcomes correctly.
+Specificity tells us a model's ability to identify negative outcomes correctly.
+Based on the sensitivity and specificity values, we will choose the model with the highest sensitivity
+and specificity values. If model 1 has a higher sensitivity value and model 2 has a higher specificity
+value, then we will choose model model 1 having higher sensitivity value if identifying positive outcomes
+correctly is more important than identifying negative outcomes correctly. If identifying negative outcomes
+correctly is more important than identifying positive outcomes correctly, then we will choose model 2
+having higher specificity value.
+So choose the model with the highest sensitivity if identifying positive outcomes correctly is more
+important than identifying negative outcomes correctly. Choose the model with the highest specificity
+if identifying negative outcomes correctly is more important than identifying positive outcomes correctly.
+
+Sometimes we want to increase false positives to decrease false negatives because false negatives are
+more dangerous than false positives. So we want to increase the sensitivity of the model.
+For example, in case of cancer detection, we want to increase the sensitivity of the model because
+false negatives are more dangerous than false positives. So we want to increase the sensitivity of the
+model so that we can catch more positive outcomes correctly.
+False positive can be increased to decrease false negatives by decreasing the threshold value.
+When we decrease the threshold value say from 0.5 to 0.3, then the model will predict more 
+positive outcomes than negative outcomes. So the number of false positives will increase and the number
+of false negatives will decrease.
+
+
+For 3 classes, we will have a 3x3 matrix. For 4 classes, we will have a 4x4 matrix and so on.
+
+example
+
+Predicted                             ---------------------   Actual   -----------------------
+
+                                      Black                  White      	        Asian
+Black                                 12                     102                     93
+White                                 112 				     23                      77
+Asian                                 83                     92                      17
+
+
+The big difference when calculating sensitivity and specificity for larger confusion matrices is that
+there are no single values that work for the entire matrix. Instead, we have to calculate sensitivity
+and specificity for each class and category. So we have to calculate sensitivity and specificity for each class and category.
+
+
+Sesnitivity for Black = TP for Black / (TP for Black + FN for Black)
+
+Sensitivity for Black = 12 / (12 + 112 + 83) = 0.06
+Sensitivity for White = 23 / (23 + 92 + 102) = 0.11
+Sensitivity for Asian = 17 / (93 + 77 + 17) = 0.09
+
+Specificity for Black = TN for Black / (TN for Black + FP for Black)
+
+Specificity for Black = (23 + 92 + 17 + 77) / (23 + 92 + 17 + 77 + 102 + 93) = 0.52
+Specificity for White = (12 + 83 + 17 + 93) / (12 + 83 + 17 + 93 + 77 + 112) = 0.52
+Specificity for Asian = (12 + 102 + 112 + 23) / (12 + 102 + 112 + 23 + 93 + 77) = 0.59
+
+
+Accuracy = How often the model is correct
+Accuracy = (TP + TN) / Total    | Total = (TP + TN + FP + FN)
+
+
+* Accuracy Paradox:
+
+Accuracy Paradox is a phenomenon where a model with a higher accuracy may have a lower predictive power
+than a model with a lower accuracy. Accuracy Paradox occurs when the dataset is imbalanced.
+A dataset is said to be imbalanced when the number of data points for each class is not equal.
+For example, if we have a dataset of 1000 data points, out of which 950 data points belong to class 0
+and 50 data points belong to class 1, then this dataset is imbalanced. In this case, say the model
+predicts class 0 for all the data points. Then the accuracy of the model will be 950/1000 = 95%.
+But this model is not a good model because it is not able to predict class 1 correctly. It will always
+predict class 0 for all the data points and never predict class 1.
+This is called "accuracy paradox".
+This is why accuracy is not a good metric in case of imbalanced datasetsto measure the performance of
+the model . In the case of imbalanced datasets, accuracy is not a good metric to measure the performance
+of the model. So, we use other metrics like precision, recall, specificity, F1 score and AUC-ROC curve
+
+Recall = How often the model predicts positive outcomes correctly
+Recall = TP / (TP + FN)
+
+
+Now considering the above example of imbalanced dataset,
+
+recall = TP / (TP + FN) = 0 / (0 + 50) = 0
+recall 0 means that the model is not able to predict positive outcomes correctly at all.
+
+
+Precision = How often the model is correct when it predicts positive outcomes
+Precision = TP / (TP + FP)
+
+F1 Score = Harmonic Mean of Precision and Recall
+F1 Score = 2 * Precision * Recall / (Precision + Recall)
+
+Hamrmonic mean (instead of arithmetic mean) allows the entire expression to be zero if either precision
+or recall is zero. So if either precision or recall is zero, then the F1 score will be zero.
+This enables us to catch the accuracy paradox.
+
+
+
+* ROC Curve (Receiver Operator Characteristic Curve):
+
+The threshold value is the value that we use to classify an observation as 1 or 0. For example, if the
+predicted value of y is greater than 0.5, then we classify the observation as 1, otherwise we classify
+the observation as 0. So 0.5 is the threshold value in this case. So the threshold value is the value
+that we use to classify an observation as 1 or 0. But threshold can be set to any value between 0 and 1
+according to our requirement and the value that will do the best job of classifying the observations
+correctly. But the question is how do we decide which threshold value to use without actually trying
+out all the possible threshold values and creating a confusion matrix for each threshold value
+and comparing the sensitivity and specificity values for each threshold value. This is where ROC curve
+comes into picture.
+
+ROC curve is a plot of the true positive rate (TPR) against the false positive rate (FPR) for the
+different possible cutpoints or thresholds of a classification task like diagnostic test. 
+The "true-positive rate" (TPR) is also known as "sensitivity" and the "false-positive rate"
+(FPR) is also known as the "fall-out" and can be calculated as (1 − specificity).
+The ROC curve is thus the sensitivity as a function of fall-out.
+
+TPR = Sensitivity = TP / (TP + FN)
+TPR tells us what percentage of patients with heart disease were correctly diagnosed as having heart disease for example
+
+FPR = 1 - Specificity = FP / (FP + TN)
+FPR tells us what percentage of patients without heart disease were incorrectly diagnosed 
+as having heart disease (False Positives) for example
+
+The TPR when the threshold is so low that everything is classified as "positive" is 1.0.
+This means every patient with heart disease is correctly identified as having heart disease.
+
+The FPR when the threshold is so low that everything is classified as "positive" is also 1.0.
+This means every patient without heart disease is incorrectly identified as having heart disease.
+
+The line joining these two points to the origin is called the "diagonal" or "random guess" line.
+i,e the line joining the points (0,0) and (1,1) is called the "diagonal" or "random guess" line.
+(1, 1) -> TPR = 1, FPR = 1
+
+A point (1, 1) means that even though we correctly classified all the patients with heart disease
+as having heart disease, we also incorrectly classified all the patients without heart disease
+as having heart disease. 
+
+A point at (0, 0) represents a threshold that results in 0 true positives and 0 false positives.
+
+This diagonal line represents where the true positive rate and false positive rate are equal.
+Any point on this line means that the proportion of correctly classified patients with heart disease
+is equal to the proportion of incorrectly classified patients without heart disease.
+
+Any point above this line means that the proportion of correctly classified patients with 
+heart disease (true positives) is greater than the proportion of incorrectly classified 
+patients without heart disease (false positives). So that threshold value is better that will
+result in a point above this line than a point below this line or on this diagonal line.
+
+
+Plotting each point of (TPR, FPR) for each threshold value will give us the ROC curve.
+ROC curve summarizes all of the confusion matrices that each threshold produced.
+
+
+AUC (Area Under the Curve) is the area under the ROC curve. AUC is a metric that tells us how well
+the model is able to distinguish between the classes. The higher the AUC, the better the model is
+at distinguishing between the classes. The ROC with the higher AUC is better than the ROC with the
+lower AUC.
+For example if Logistic Regression represents a ROC-1 and KNN represents a ROC-2, then Logistic
+Regression is better than KNN if AUC-1 > AUC-2. 
+
+
+Although ROC curves are drawn using TPR and FPR, to summarize the confusion matrices,
+there are other metrics that attempt to do the same thing. For example people often replace
+the FPR with Precision.
+Precision = TP / (TP + FP)
+Precision is the proportion of the positive results that were correctly classified.
+
+
+In summary ROC curve make it easy to identify the best threshold value for a model.
+The best threshold value is the one that gives the highest TPR and lowest FPR.
+So the location of the point (TPR, FPR) that is closest to the point (1, 0) is the best 
+threshold value. The top left corner of the ROC curve is the best threshold value.
 
 */

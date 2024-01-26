@@ -586,8 +586,11 @@ And as you can imagine, that's computationally extremely expensive, but it will 
 accurate reading for your particular model since training on everything but one row of the data, and
 then you're going to average all those errors across all those rows.
 
-"Hold out cross validation" is a variation of k-fold cross validation. In hold out cross validation, we
-split the input data into two subsets: a training set and a test set. We then perform k-fold cross validation
-on the training set and evaluate the final performance of our model on the test set.
+"Hold out cross validation" (k-fold cross validation with a hand out test set)is a variation of k-fold 
+cross validation.  In hold out cross validation, we split the input data into two subsets: a training set 
+and a test set. We then perform k-fold cross validation on the training set and evaluate the final performance 
+of our model on the test set.
 
+Something to keep in mind is many regularization methods have tunable hyperparameters that we can adjust
+based on cross validation techniques.
 */
