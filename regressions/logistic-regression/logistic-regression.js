@@ -393,6 +393,8 @@ and
 Binary Cross Entropy:
 Cross Entropy = - (1 * log(0.25) + 0 * log(0.75)) = 1.386 bits
 
+This binary cross entropy equation is used as the loss or cost function in Logistic Regression.
+Loss = - (y * log(ŷ) + (1 - y) * log(1 - ŷ))
 
 
 */
