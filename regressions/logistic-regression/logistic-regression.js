@@ -339,8 +339,10 @@ with MSE back on linear regression.
 * Entropy and Cross Entropy:
 
 Entropy is a measure of the uncertainty of a random variable. It's a quantity that describes the 
-amount of surprise or uncertainty that we have about a specific variable. It is a measure of the amount of information contained in each message. The higher the entropy, the more information is contained in each message.
-Entropy is maximum when all the messages are equally likely. Entropy is minimum when one message is certain to occur. In other words or in terms of probability, entropy is maximum when probability
+amount of surprise or uncertainty that we have about a specific variable. It is a measure of the amount of 
+information contained in each message. The higher the entropy, the more information is contained in each message.
+Entropy is maximum when all the messages are equally likely. Entropy is minimum when one message is certain to occur. 
+In other words or in terms of probability, entropy is maximum when probability
 is 0.5 and entropy is minimum when probability is 0 or 1.
 So entropy is maximal at probabilities of 0.5. So this is when things when events are maximally 
 uncertain or unpredictable.
@@ -395,6 +397,16 @@ Cross Entropy = - (1 * log(0.25) + 0 * log(0.75)) = 1.386 bits
 
 This binary cross entropy equation is used as the loss or cost function in Logistic Regression.
 Loss = - (y * log(ŷ) + (1 - y) * log(1 - ŷ))
+
+
+In summary, cross entropy is how different our predicted probability distribution is compared to the true probability 
+distribution. 
+Cross entropy loss here just happens to be one of the better mathematical tools for us to tell the difference between 
+two probability distributions. That's really all there is to it.
+
+To recap, cross entropy loss simply tells us how the output vector of probabilities Q differs from the label vector of true 
+probabilities P. When the loss is zero we know that the two vectors are exactly equal.
+Therefore, this makes cross entropy loss ideal for multiclass classification problems.
 
 
 */
@@ -759,7 +771,7 @@ Accuracy = (TP + TN) / Total    | Total = (TP + TN + FP + FN)
 * Accuracy Paradox:
 
 Accuracy Paradox is a phenomenon where a model with a higher accuracy may have a lower predictive power
-than a model with a lower accuracy. Accuracy Paradox occurs when the dataset is imbalanced.
+than a model with a lower accuracy. Accuracy Paradox occurs when the dataset is imbalanced / skewed.
 A dataset is said to be imbalanced when the number of data points for each class is not equal.
 For example, if we have a dataset of 1000 data points, out of which 950 data points belong to class 0
 and 50 data points belong to class 1, then this dataset is imbalanced. In this case, say the model
@@ -773,6 +785,9 @@ of the model. So, we use other metrics like precision, recall, specificity, F1 s
 
 Recall = How often the model predicts positive outcomes correctly
 Recall = TP / (TP + FN)
+Recall (Sensitivity) = TP / total number of actual positive outcomes
+Recall asks: Of all the patients that "actually have the heart disease" (y = 1), 
+what fraction did we correctly detect as having it?
 
 
 Now considering the above example of imbalanced dataset,
@@ -780,16 +795,41 @@ Now considering the above example of imbalanced dataset,
 recall = TP / (TP + FN) = 0 / (0 + 50) = 0
 recall 0 means that the model is not able to predict positive outcomes correctly at all.
 
-
 Precision = How often the model is correct when it predicts positive outcomes
+Precision = TP / total number of predicted positive outcomes
 Precision = TP / (TP + FP)
+Precision asks: Of all the patients that we "predicted to have a heart disease" (ŷ = 1), 
+what fraction actually has the rare disease.
+
+Precision -> Out of all the data points that the model predicted as positive, 
+how many of them are actually positive or how many times is the model correct.
+
+In the ideal case, we like for learning algorithms that have high precision and high recall. 
+High precision would mean that if a diagnosis of patients have that rare disease, probably the patient 
+does have it and it's an accurate diagnosis. 
+High recall means that if there's a patient with that rare disease, probably the algorithm will 
+correctly identify that they do have that disease.
+
+Increasing the threshold value say from 0.5 to 0.7, will increase the precision and decrease the recall.
+Because the model will predict less positive outcomes and more negative outcomes. So the number of false
+positives will decrease and the number of true positives will also decrease. So the precision will increase
+and the recall will decrease.
+We increase the threshold value when for example we want to be confident that the positive outcomes that
+the model predicts are actually positive outcomes and we want to avoid false positives (i.e predit 
+ŷ = 1 only if we are very confident).
+Decreasing the threshold value say from 0.5 to 0.3, will increase the recall and decrease the precision.
+We decrease the threshold value when for example we want to avoid missing too many cases of a rare disease.
 
 F1 Score = Harmonic Mean of Precision and Recall
-F1 Score = 2 * Precision * Recall / (Precision + Recall)
+F1 Score = 1 / [ (1/Precision + 1/Recall) * (1 / 2) ]
+F1 Score = (2 * Precision * Recall) / (Precision + Recall)
 
 Hamrmonic mean (instead of arithmetic mean) allows the entire expression to be zero if either precision
 or recall is zero. So if either precision or recall is zero, then the F1 score will be zero.
 This enables us to catch the accuracy paradox.
+
+F1 Score gives us a way to balance or trade-off precision and recall.
+Choose the model with the highest F1 score if you want a balance between precision and recall.
 
 
 
